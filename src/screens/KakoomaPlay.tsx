@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
+import { PentaCell } from '../components/PentaCell'
 import {
   KAKOOMA_FINAL_HINTS,
   KAKOOMA_HINTS,
@@ -134,6 +135,24 @@ export function KakoomaPlay({ board, onFinish, onQuit }: KakoomaPlayProps) {
             {board.cells.map((cell, cellIndex) => {
               const done = solved[cellIndex]
               const isActive = cellIndex === activeCell
+
+              if (board.fieldCount === 5) {
+                return (
+                  <PentaCell
+                    key={cellIndex}
+                    numbers={cell.numbers}
+                    answer={done}
+                    active={isActive}
+                    flash={isActive ? flash : 'idle'}
+                    disabled={lock}
+                    onPick={(value) => pickCell(cellIndex, value)}
+                    onSelect={() =>
+                      !lock && solved[cellIndex] === null && setActiveCell(cellIndex)
+                    }
+                  />
+                )
+              }
+
               return (
                 <div
                   key={cellIndex}
