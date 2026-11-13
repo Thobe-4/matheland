@@ -10,6 +10,13 @@
   --ink: #16312e;
   --muted: #4a6b66;
   --white: #ffffff;
+  /* Kakooma-Felder: hell + gut lesbar, ohne Weiß/Türkis */
+  --k-field-a: #ffe4b8;
+  --k-field-b: #ddd0f5;
+  --k-core-a: #c49a6c;
+  --k-core-b: #8f7cc0;
+  --k-solved: #c9c2b6;
+  --k-num: #1c1917;
   --shadow: 0 18px 40px rgba(6, 78, 72, 0.14);
   --radius: 22px;
   --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;

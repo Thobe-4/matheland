@@ -698,7 +698,7 @@
 }
 
 .k-penta__face {
-  fill: #fff;
+  fill: var(--k-field-a);
   stroke: #1a1a1a;
   stroke-width: 1.35;
   stroke-linejoin: round;
@@ -713,7 +713,7 @@
 }
 
 .k-penta__core {
-  fill: #9be8dc;
+  fill: var(--k-core-a);
   stroke: #1a1a1a;
   stroke-width: 1.25;
   stroke-linejoin: round;
@@ -740,7 +740,7 @@
 }
 
 .k-penta--solved .k-penta__face {
-  fill: #c5d0d8;
+  fill: var(--k-solved);
 }
 
 .k-penta--solved.k-penta--correct .k-penta__face {
@@ -762,7 +762,7 @@
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  color: #111;
+  color: var(--k-num);
   font-family: var(--font-display);
   font-size: clamp(0.95rem, 2.6vw, 1.2rem);
   font-weight: 700;
@@ -793,7 +793,7 @@
   font-family: var(--font-display);
   font-size: clamp(1.8rem, 6vw, 2.8rem);
   font-weight: 700;
-  color: #222;
+  color: var(--k-num);
   line-height: 1;
   transform: translate(-50%, -50%) rotate(calc(-1 * var(--spin, 0deg)));
   cursor: pointer;
@@ -832,11 +832,11 @@
 }
 
 .k-hex--light .k-hex__face {
-  fill: #fff;
+  fill: var(--k-field-a);
 }
 
 .k-hex--blue .k-hex__face {
-  fill: #c8e8f2;
+  fill: var(--k-field-b);
 }
 
 .k-hex__spokes {
@@ -854,11 +854,11 @@
 }
 
 .k-hex--light .k-hex__core {
-  fill: #9aa3ad;
+  fill: var(--k-core-a);
 }
 
 .k-hex--blue .k-hex__core {
-  fill: #5eb8c9;
+  fill: var(--k-core-b);
 }
 
 .k-hex--active .k-hex__face {
@@ -881,7 +881,7 @@
 }
 
 .k-hex--solved .k-hex__face {
-  fill: #c5d0d8;
+  fill: var(--k-solved);
 }
 
 .k-hex--solved.k-hex--correct .k-hex__face {
@@ -903,7 +903,7 @@
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  color: #222;
+  color: var(--k-num);
   font-family: var(--font-display);
   font-size: clamp(0.85rem, 2.3vw, 1.1rem);
   font-weight: 700;
@@ -934,7 +934,7 @@
   font-family: var(--font-display);
   font-size: clamp(1.7rem, 5.5vw, 2.6rem);
   font-weight: 700;
-  color: #222;
+  color: var(--k-num);
   line-height: 1;
   transform: translate(-50%, -50%);
   cursor: pointer;
@@ -961,11 +961,11 @@
 }
 
 .k-square--light {
-  background: #fff;
+  background: var(--k-field-a);
 }
 
 .k-square--blue {
-  background: #d7eef6;
+  background: var(--k-field-b);
 }
 
 .k-square--active {
@@ -982,7 +982,7 @@
 }
 
 .k-square--solved {
-  background: #c5d0d8;
+  background: var(--k-solved);
 }
 
 .k-square--solved.k-square--correct {
@@ -1019,10 +1019,10 @@
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  color: #333;
+  color: var(--k-num);
   font-family: var(--font-display);
   font-size: clamp(0.78rem, 2.4vw, 1.15rem);
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -1035,7 +1035,7 @@
 
 .k-square__num:active:not(:disabled) {
   transform: scale(1.12);
-  color: var(--teal-700, #0f766e);
+  color: var(--amber-deep, #c67c00);
 }
 
 .k-square__answer {
@@ -1046,7 +1046,7 @@
   font-family: var(--font-display);
   font-size: clamp(2rem, 8vw, 3.4rem);
   font-weight: 700;
-  color: #222;
+  color: var(--k-num);
   line-height: 1;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
