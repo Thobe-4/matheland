@@ -1,4 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <rect width="64" height="64" rx="16" fill="#0A6B63"/>
-  <circle cx="32" cy="32" r="14" fill="#F0A202"/>
+  <rect width="64" height="64" rx="14" fill="#E8F6F3" stroke="#0A6B63" stroke-width="3"/>
+  <!-- 2×2 mini Kakooma: 3+5=8 -->
+  <rect x="10" y="10" width="20" height="20" rx="4" fill="#FFE4B8" stroke="#2D3748" stroke-width="1.5"/>
+  <rect x="34" y="10" width="20" height="20" rx="4" fill="#DDD0F5" stroke="#2D3748" stroke-width="1.5"/>
+  <rect x="10" y="34" width="20" height="20" rx="4" fill="#DDD0F5" stroke="#2D3748" stroke-width="1.5"/>
+  <rect x="34" y="34" width="20" height="20" rx="4" fill="#FFE4B8" stroke="#2D3748" stroke-width="1.5"/>
+  <text x="20" y="25" text-anchor="middle" font-family="Nunito, Segoe UI, sans-serif" font-size="13" font-weight="700" fill="#1C1917">3</text>
+  <text x="44" y="25" text-anchor="middle" font-family="Nunito, Segoe UI, sans-serif" font-size="13" font-weight="700" fill="#1C1917">5</text>
+  <text x="20" y="49" text-anchor="middle" font-family="Nunito, Segoe UI, sans-serif" font-size="13" font-weight="700" fill="#1C1917">2</text>
+  <text x="44" y="49" text-anchor="middle" font-family="Nunito, Segoe UI, sans-serif" font-size="13" font-weight="700" fill="#1C1917">8</text>
 </svg>
