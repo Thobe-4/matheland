@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { HexCell } from '../components/HexCell'
 import { PentaCell } from '../components/PentaCell'
 import { SquareCell } from '../components/SquareCell'
@@ -23,6 +23,7 @@ export function KakoomaPlay({ board, onFinish, onQuit }: KakoomaPlayProps) {
   const [activeCell, setActiveCell] = useState(0)
   const [phase, setPhase] = useState<Phase>('cells')
   const [flash, setFlash] = useState<Flash>('idle')
+  const [flashCell, setFlashCell] = useState<number | null>(null)
   const [mistakes, setMistakes] = useState(0)
   const [lock, setLock] = useState(false)
   const startedAt = useRef(Date.now())
@@ -30,19 +31,15 @@ export function KakoomaPlay({ board, onFinish, onQuit }: KakoomaPlayProps) {
   const solvedCount = solved.filter((v) => v !== null).length
   const progress =
     phase === 'final'
-      ? 100
+      ? 92
       : (solvedCount / (board.fieldCount + 1)) * 100
-
-  const finalNumbers = useMemo(
-    () => solved.map((v, i) => (v !== null ? v : board.cells[i].answer)),
-    [solved, board.cells],
-  )
 
   const pickCell = (cellIndex: number, value: number) => {
     if (lock || phase !== 'cells' || solved[cellIndex] !== null) return
     const cell = board.cells[cellIndex]
     const correct = value === cell.answer
     setActiveCell(cellIndex)
+    setFlashCell(cellIndex)
     setLock(true)
 
     if (!correct) {
@@ -50,6 +47,7 @@ export function KakoomaPlay({ board, onFinish, onQuit }: KakoomaPlayProps) {
       setFlash('wrong')
       window.setTimeout(() => {
         setFlash('idle')
+        setFlashCell(null)
         setLock(false)
       }, 700)
       return
@@ -62,9 +60,11 @@ export function KakoomaPlay({ board, onFinish, onQuit }: KakoomaPlayProps) {
 
     window.setTimeout(() => {
       setFlash('idle')
+      setFlashCell(null)
       setLock(false)
       if (next.every((v) => v !== null)) {
         setPhase('final')
+        setActiveCell(-1)
       } else {
         const nextOpen = next.findIndex((v) => v === null)
         if (nextOpen >= 0) setActiveCell(nextOpen)
@@ -72,9 +72,10 @@ export function KakoomaPlay({ board, onFinish, onQuit }: KakoomaPlayProps) {
     }, 550)
   }
 
-  const pickFinal = (value: number) => {
+  const pickFinal = (cellIndex: number, value: number) => {
     if (lock || phase !== 'final') return
     const correct = value === board.finalAnswer
+    setFlashCell(cellIndex)
     setLock(true)
 
     if (!correct) {
@@ -82,6 +83,7 @@ export function KakoomaPlay({ board, onFinish, onQuit }: KakoomaPlayProps) {
       setFlash('wrong')
       window.setTimeout(() => {
         setFlash('idle')
+        setFlashCell(null)
         setLock(false)
       }, 800)
       return
@@ -111,6 +113,9 @@ export function KakoomaPlay({ board, onFinish, onQuit }: KakoomaPlayProps) {
           ? 'kakooma-grid kakooma-grid--5'
           : 'kakooma-grid kakooma-grid--4'
 
+  const cellFlash = (cellIndex: number): Flash =>
+    flashCell === cellIndex ? flash : 'idle'
+
   return (
     <section className="screen kakooma">
       <header className="topbar">
@@ -132,141 +137,82 @@ export function KakoomaPlay({ board, onFinish, onQuit }: KakoomaPlayProps) {
           {phase === 'final' ? KAKOOMA_FINAL_HINTS[board.kind] : KAKOOMA_HINTS[board.kind]}
         </p>
 
-        {phase === 'cells' && (
-          <div className={gridClass}>
-            {board.cells.map((cell, cellIndex) => {
-              const done = solved[cellIndex]
-              const isActive = cellIndex === activeCell
+        <div className={gridClass}>
+          {board.cells.map((cell, cellIndex) => {
+            const done = solved[cellIndex]
+            const isActive = phase === 'cells' && cellIndex === activeCell
+            const flashHere = cellFlash(cellIndex)
+            const answerClick =
+              phase === 'final' && done !== null
+                ? (value: number) => pickFinal(cellIndex, value)
+                : undefined
 
-              if (board.fieldCount === 5) {
-                return (
-                  <PentaCell
-                    key={cellIndex}
-                    numbers={cell.numbers}
-                    answer={done}
-                    active={isActive}
-                    flash={isActive ? flash : 'idle'}
-                    disabled={lock}
-                    onPick={(value) => pickCell(cellIndex, value)}
-                    onSelect={() =>
-                      !lock && solved[cellIndex] === null && setActiveCell(cellIndex)
-                    }
-                  />
-                )
-              }
-
-              if (board.fieldCount === 6) {
-                return (
-                  <HexCell
-                    key={cellIndex}
-                    numbers={cell.numbers}
-                    answer={done}
-                    tone={cellIndex % 2 === 0 ? 'light' : 'blue'}
-                    active={isActive}
-                    flash={isActive ? flash : 'idle'}
-                    disabled={lock}
-                    onPick={(value) => pickCell(cellIndex, value)}
-                    onSelect={() =>
-                      !lock && solved[cellIndex] === null && setActiveCell(cellIndex)
-                    }
-                  />
-                )
-              }
-
-              if (board.fieldCount === 9) {
-                const row = Math.floor(cellIndex / 3)
-                const col = cellIndex % 3
-                const tone = (row + col) % 2 === 0 ? 'blue' : 'light'
-                return (
-                  <SquareCell
-                    key={cellIndex}
-                    numbers={cell.numbers}
-                    answer={done}
-                    tone={tone}
-                    active={isActive}
-                    flash={isActive ? flash : 'idle'}
-                    disabled={lock}
-                    onPick={(value) => pickCell(cellIndex, value)}
-                    onSelect={() =>
-                      !lock && solved[cellIndex] === null && setActiveCell(cellIndex)
-                    }
-                  />
-                )
-              }
-
+            if (board.fieldCount === 5) {
               return (
-                <div
+                <PentaCell
                   key={cellIndex}
-                  className={
-                    done !== null
-                      ? 'k-cell k-cell--solved'
-                      : isActive
-                        ? `k-cell k-cell--active${flash !== 'idle' ? ` k-cell--${flash}` : ''}`
-                        : 'k-cell'
+                  numbers={cell.numbers}
+                  answer={done}
+                  active={isActive}
+                  flash={flashHere}
+                  disabled={lock}
+                  onAnswerClick={answerClick}
+                  onPick={(value) => pickCell(cellIndex, value)}
+                  onSelect={() =>
+                    !lock && phase === 'cells' && solved[cellIndex] === null && setActiveCell(cellIndex)
                   }
-                >
-                  {done !== null ? (
-                    <span className="k-cell__answer">{done}</span>
-                  ) : (
-                    <div className="k-cell__bubbles">
-                      {cell.numbers.map((n, i) => (
-                        <button
-                          key={`${cellIndex}-${i}-${n}`}
-                          type="button"
-                          className="bubble bubble--sm"
-                          disabled={lock}
-                          onClick={() => pickCell(cellIndex, n)}
-                        >
-                          {n}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                  <button
-                    type="button"
-                    className="k-cell__tab"
-                    onClick={() => !lock && solved[cellIndex] === null && setActiveCell(cellIndex)}
-                    disabled={done !== null}
-                  >
-                    Feld {cellIndex + 1}
-                  </button>
-                </div>
+                />
               )
-            })}
-          </div>
-        )}
-
-        {phase === 'final' && (
-          <div
-            className={
-              flash === 'correct'
-                ? 'kakooma__board kakooma__board--correct'
-                : flash === 'wrong'
-                  ? 'kakooma__board kakooma__board--wrong'
-                  : 'kakooma__board'
             }
-          >
-            {finalNumbers.map((n, i) => (
-              <button
-                key={`final-${i}-${n}`}
-                type="button"
-                className={
-                  flash === 'correct' && n === board.finalAnswer
-                    ? 'bubble bubble--answer'
-                    : flash === 'wrong'
-                      ? 'bubble'
-                      : 'bubble'
-                }
-                disabled={lock}
-                onClick={() => pickFinal(n)}
-              >
-                {n}
-              </button>
-            ))}
-          </div>
-        )}
 
-        {flash === 'correct' && phase === 'cells' && (
+            if (board.fieldCount === 6) {
+              return (
+                <HexCell
+                  key={cellIndex}
+                  numbers={cell.numbers}
+                  answer={done}
+                  tone={cellIndex % 2 === 0 ? 'light' : 'blue'}
+                  active={isActive}
+                  flash={flashHere}
+                  disabled={lock}
+                  onAnswerClick={answerClick}
+                  onPick={(value) => pickCell(cellIndex, value)}
+                  onSelect={() =>
+                    !lock && phase === 'cells' && solved[cellIndex] === null && setActiveCell(cellIndex)
+                  }
+                />
+              )
+            }
+
+            if (board.fieldCount === 9 || board.fieldCount === 4) {
+              const cols = board.fieldCount === 9 ? 3 : 2
+              const row = Math.floor(cellIndex / cols)
+              const col = cellIndex % cols
+              const tone = (row + col) % 2 === 0 ? 'blue' : 'light'
+              return (
+                <SquareCell
+                  key={cellIndex}
+                  numbers={cell.numbers}
+                  answer={done}
+                  cols={cols}
+                  tone={tone}
+                  active={isActive}
+                  flash={flashHere}
+                  disabled={lock}
+                  onAnswerClick={answerClick}
+                  onPick={(value) => pickCell(cellIndex, value)}
+                  onSelect={() =>
+                    !lock && phase === 'cells' && solved[cellIndex] === null && setActiveCell(cellIndex)
+                  }
+                />
+              )
+            }
+
+            return null
+          })}
+        </div>
+
+        {flash === 'correct' && phase === 'cells' && activeCell >= 0 && (
           <p className="problem__hint">
             Super! {board.cells[activeCell].pair[0]} {op} {board.cells[activeCell].pair[1]} ={' '}
             {board.cells[activeCell].answer}

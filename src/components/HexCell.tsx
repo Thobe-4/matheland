@@ -49,6 +49,7 @@ interface HexCellProps {
   active: boolean
   flash: 'idle' | 'correct' | 'wrong'
   disabled: boolean
+  onAnswerClick?: (value: number) => void
   onPick: (value: number) => void
   onSelect: () => void
 }
@@ -60,13 +61,14 @@ export function HexCell({
   active,
   flash,
   disabled,
+  onAnswerClick,
   onPick,
   onSelect,
 }: HexCellProps) {
   const solved = answer !== null
   const state =
     solved
-      ? 'k-hex--solved'
+      ? `k-hex--solved${flash !== 'idle' ? ` k-hex--${flash}` : ''}`
       : active
         ? `k-hex--active${flash !== 'idle' ? ` k-hex--${flash}` : ''}`
         : ''
@@ -78,8 +80,8 @@ export function HexCell({
     >
       <svg className="k-hex__svg" viewBox="0 0 100 100" aria-hidden="true">
         <polygon className="k-hex__face" points={outerPoly} />
-        <path className="k-hex__spokes" d={spokes} />
-        <polygon className="k-hex__core" points={innerPoly} />
+        {!solved && <path className="k-hex__spokes" d={spokes} />}
+        {!solved && <polygon className="k-hex__core" points={innerPoly} />}
       </svg>
 
       {!solved &&
@@ -103,9 +105,18 @@ export function HexCell({
         })}
 
       {solved && (
-        <span className="k-hex__answer" aria-label={`Lösung ${answer}`}>
+        <button
+          type="button"
+          className="k-hex__answer"
+          aria-label={`Lösung ${answer}`}
+          disabled={disabled || !onAnswerClick}
+          onClick={(e) => {
+            e.stopPropagation()
+            if (onAnswerClick && answer !== null) onAnswerClick(answer)
+          }}
+        >
           {answer}
-        </span>
+        </button>
       )}
     </div>
   )

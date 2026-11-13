@@ -46,6 +46,7 @@ interface PentaCellProps {
   active: boolean
   flash: 'idle' | 'correct' | 'wrong'
   disabled: boolean
+  onAnswerClick?: (value: number) => void
   onPick: (value: number) => void
   onSelect: () => void
 }
@@ -56,13 +57,14 @@ export function PentaCell({
   active,
   flash,
   disabled,
+  onAnswerClick,
   onPick,
   onSelect,
 }: PentaCellProps) {
   const solved = answer !== null
   const state =
     solved
-      ? 'k-penta--solved'
+      ? `k-penta--solved${flash !== 'idle' ? ` k-penta--${flash}` : ''}`
       : active
         ? `k-penta--active${flash !== 'idle' ? ` k-penta--${flash}` : ''}`
         : ''
@@ -71,8 +73,8 @@ export function PentaCell({
     <div className={`k-penta ${state}`.trim()} onClick={onSelect}>
       <svg className="k-penta__svg" viewBox="0 0 100 100" aria-hidden="true">
         <polygon className="k-penta__face" points={outerPoly} />
-        <path className="k-penta__spokes" d={spokes} />
-        <polygon className="k-penta__core" points={innerPoly} />
+        {!solved && <path className="k-penta__spokes" d={spokes} />}
+        {!solved && <polygon className="k-penta__core" points={innerPoly} />}
       </svg>
 
       {!solved &&
@@ -96,9 +98,18 @@ export function PentaCell({
         })}
 
       {solved && (
-        <span className="k-penta__answer" aria-label={`Lösung ${answer}`}>
+        <button
+          type="button"
+          className="k-penta__answer"
+          aria-label={`Lösung ${answer}`}
+          disabled={disabled || !onAnswerClick}
+          onClick={(e) => {
+            e.stopPropagation()
+            if (onAnswerClick && answer !== null) onAnswerClick(answer)
+          }}
+        >
           {answer}
-        </span>
+        </button>
       )}
     </div>
   )
