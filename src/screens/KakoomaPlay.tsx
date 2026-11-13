@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { HexCell } from '../components/HexCell'
 import { PentaCell } from '../components/PentaCell'
+import { SquareCell } from '../components/SquareCell'
 import {
   KAKOOMA_FINAL_HINTS,
   KAKOOMA_HINTS,
@@ -161,6 +162,27 @@ export function KakoomaPlay({ board, onFinish, onQuit }: KakoomaPlayProps) {
                     numbers={cell.numbers}
                     answer={done}
                     tone={cellIndex % 2 === 0 ? 'light' : 'blue'}
+                    active={isActive}
+                    flash={isActive ? flash : 'idle'}
+                    disabled={lock}
+                    onPick={(value) => pickCell(cellIndex, value)}
+                    onSelect={() =>
+                      !lock && solved[cellIndex] === null && setActiveCell(cellIndex)
+                    }
+                  />
+                )
+              }
+
+              if (board.fieldCount === 9) {
+                const row = Math.floor(cellIndex / 3)
+                const col = cellIndex % 3
+                const tone = (row + col) % 2 === 0 ? 'blue' : 'light'
+                return (
+                  <SquareCell
+                    key={cellIndex}
+                    numbers={cell.numbers}
+                    answer={done}
+                    tone={tone}
                     active={isActive}
                     flash={isActive ? flash : 'idle'}
                     disabled={lock}
