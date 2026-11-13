@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
+import { HexCell } from '../components/HexCell'
 import { PentaCell } from '../components/PentaCell'
 import {
   KAKOOMA_FINAL_HINTS,
@@ -142,6 +143,24 @@ export function KakoomaPlay({ board, onFinish, onQuit }: KakoomaPlayProps) {
                     key={cellIndex}
                     numbers={cell.numbers}
                     answer={done}
+                    active={isActive}
+                    flash={isActive ? flash : 'idle'}
+                    disabled={lock}
+                    onPick={(value) => pickCell(cellIndex, value)}
+                    onSelect={() =>
+                      !lock && solved[cellIndex] === null && setActiveCell(cellIndex)
+                    }
+                  />
+                )
+              }
+
+              if (board.fieldCount === 6) {
+                return (
+                  <HexCell
+                    key={cellIndex}
+                    numbers={cell.numbers}
+                    answer={done}
+                    tone={cellIndex % 2 === 0 ? 'light' : 'blue'}
                     active={isActive}
                     flash={isActive ? flash : 'idle'}
                     disabled={lock}

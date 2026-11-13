@@ -548,8 +548,46 @@
   top: 40.11%;
 }
 
+/* 6 Felder: klassisches Kakooma – 6 Sechsecke im Honeycomb-Ring */
 .kakooma-grid--6 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: block;
+  position: relative;
+  width: min(100%, 560px);
+  aspect-ratio: 1;
+  margin-inline: auto;
+}
+
+.kakooma-grid--6 > .k-hex {
+  position: absolute;
+  width: 36%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+}
+
+/* Honeycomb: Ringradius ≈ Sechseck-Breite (Kanten an Kanten), Start oben */
+.kakooma-grid--6 > :nth-child(1) {
+  left: 50%;
+  top: 20.1%;
+}
+.kakooma-grid--6 > :nth-child(2) {
+  left: 75.9%;
+  top: 35.05%;
+}
+.kakooma-grid--6 > :nth-child(3) {
+  left: 75.9%;
+  top: 64.95%;
+}
+.kakooma-grid--6 > :nth-child(4) {
+  left: 50%;
+  top: 79.9%;
+}
+.kakooma-grid--6 > :nth-child(5) {
+  left: 24.1%;
+  top: 64.95%;
+}
+.kakooma-grid--6 > :nth-child(6) {
+  left: 24.1%;
+  top: 35.05%;
 }
 
 .kakooma-grid--9 {
@@ -732,6 +770,130 @@
   color: #3a2400;
   line-height: 1;
   transform: translate(-50%, -50%) rotate(calc(-1 * var(--spin, 0deg)));
+  pointer-events: none;
+}
+
+/* Einzelnes Sechseck-Puzzle (SVG, flat-top, abwechselnd hell/blau) */
+.k-hex {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  min-height: 0;
+  cursor: pointer;
+}
+
+.k-hex__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 4px 10px rgba(6, 78, 72, 0.1));
+}
+
+.k-hex__face {
+  stroke: #1a1a1a;
+  stroke-width: 1.35;
+  stroke-linejoin: round;
+  transition: fill 160ms ease;
+}
+
+.k-hex--light .k-hex__face {
+  fill: #fff;
+}
+
+.k-hex--blue .k-hex__face {
+  fill: #c8e8f2;
+}
+
+.k-hex__spokes {
+  fill: none;
+  stroke: #1a1a1a;
+  stroke-width: 1.1;
+  stroke-linecap: round;
+}
+
+.k-hex__core {
+  stroke: #1a1a1a;
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+  transition: fill 160ms ease;
+}
+
+.k-hex--light .k-hex__core {
+  fill: #9aa3ad;
+}
+
+.k-hex--blue .k-hex__core {
+  fill: #5eb8c9;
+}
+
+.k-hex--active .k-hex__face {
+  stroke: var(--teal-500, #14b8a6);
+  stroke-width: 2.4;
+}
+
+.k-hex--active .k-hex__svg {
+  filter:
+    drop-shadow(0 0 0 2px var(--teal-500, #14b8a6))
+    drop-shadow(0 8px 16px rgba(6, 78, 72, 0.16));
+}
+
+.k-hex--correct .k-hex__face {
+  fill: #e4f8e8;
+}
+
+.k-hex--wrong .k-hex__face {
+  fill: #ffece9;
+}
+
+.k-hex--solved .k-hex__core {
+  fill: #ffd56a;
+}
+
+.k-hex__num {
+  position: absolute;
+  z-index: 2;
+  width: clamp(26px, 6.2vw, 36px);
+  height: clamp(26px, 6.2vw, 36px);
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #222;
+  font-family: var(--font-display);
+  font-size: clamp(0.85rem, 2.3vw, 1.1rem);
+  font-weight: 700;
+  line-height: 1;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.k-hex__num:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.k-hex__num:active:not(:disabled) {
+  transform: translate(-50%, -50%) scale(1.12);
+}
+
+.k-hex__answer {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 3.2vw, 1.55rem);
+  font-weight: 800;
+  color: #3a2400;
+  line-height: 1;
+  transform: translate(-50%, -50%);
   pointer-events: none;
 }
 
